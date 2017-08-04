@@ -27,7 +27,6 @@
 		bola.position.z = 31;
 		escena.add(camara);
 		escena.add(bola);
-
 		var vely = 0;
 		var velz = 0.25;
 		var rotx = 0.05;
@@ -64,19 +63,15 @@
 			this.luz.position.x = this.x;
 			this.luz.position.y = this.y;
 			this.luz.position.z = this.z;
-
 			escena.add(this.luz);
 		}
-
 		var planoAbajo = new Plano(30, 62, pared, 0, 0, 31, -Math.PI/2, 0, 0);
 		var planoArriba = new Plano(30, 62, pared, 0, 30, 31, -Math.PI/2, 0, 0);
 		var planoDelante = new Plano(30, 30, pared, 0, 15, 0, 0, Math.PI*2, 0);
 		var planoIzq = new Plano(30, 62, pared, -15, 15, 31, Math.PI/2, Math.PI/2, 0);
 		var planoDer = new Plano(30, 62, pared, 15, 15, 31, Math.PI/2, Math.PI/2, 0);
-
 		var luzIzq = new Luz(50, 60, 60);
 		var luzDer = new Luz(-50, -60, -60);
-		
 		function mover()
 		{
 			bola.rotation.x += rotx;
@@ -120,6 +115,5 @@
     </script>
 </head>
 <body>		
-	
 </body>
 </html>
