@@ -1,0 +1,125 @@
+<html lang="es">
+<head>
+    <title>Colisión pelota</title>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js"></script>
+    <meta charset="utf-8">
+    <style type="text/css">
+    	body{padding: 0; margin: 0;}
+    </style>
+    <script type="text/javascript">
+    window.onload = function()
+	{
+		console.log("Código escrito por David Cabrera Berenguer");
+		var escena = new THREE.Scene();
+		var sw =  window.innerWidth;
+		var sh =  window.innerHeight;
+		var camara = new THREE.PerspectiveCamera(75, sw/sh , 0.1, 1000);
+		var renderer = new THREE.WebGLRenderer();
+		renderer.setSize(sw, sh);
+		document.body.appendChild(renderer.domElement);
+		camara.position.z = 65;
+		camara.position.y = 3;
+		var geometria = new THREE.SphereGeometry(3, 100, 100);
+		var pared = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture("textures/pared.jpg"), side: THREE.DoubleSide});
+		var balon = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture("textures/nature.jpg")});
+		var bola = new THREE.Mesh(geometria, balon);
+		bola.position.y = 3;
+		bola.position.z = 31;
+		escena.add(camara);
+		escena.add(bola);
+
+		var vely = 0;
+		var velz = 0.25;
+		var rotx = 0.05;
+		var grav = 0.01;
+		var salto = 0.4;
+		var suelo = 3;
+		function Plano(w, h, material, posx, posy, posz, rotx, roty, rotz)
+		{
+			this.w = w;
+			this.h = h;
+			this.material = material;
+			this.posx = posx;
+			this.posy = posy;
+			this.posz = posz;
+			this.rotx = rotx;
+			this.roty = roty;
+			this.rotz = rotz;
+			this.geometria = new THREE.PlaneGeometry(this.w, this.h);
+			this.malla = new THREE.Mesh(this.geometria, this.material);
+			this.malla.position.x = this.posx;
+			this.malla.position.y = this.posy;
+			this.malla.position.z = this.posz;
+			this.malla.rotation.x = this.rotx;
+			this.malla.rotation.y = this.roty;
+			this.malla.rotation.z = this.rotz;
+			escena.add(this.malla);
+		}
+		function Luz(x, y, z)
+		{
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.luz = new THREE.AmbientLight("#FFFFFF");
+			this.luz.position.x = this.x;
+			this.luz.position.y = this.y;
+			this.luz.position.z = this.z;
+
+			escena.add(this.luz);
+		}
+
+		var planoAbajo = new Plano(30, 62, pared, 0, 0, 31, -Math.PI/2, 0, 0);
+		var planoArriba = new Plano(30, 62, pared, 0, 30, 31, -Math.PI/2, 0, 0);
+		var planoDelante = new Plano(30, 30, pared, 0, 15, 0, 0, Math.PI*2, 0);
+		var planoIzq = new Plano(30, 62, pared, -15, 15, 31, Math.PI/2, Math.PI/2, 0);
+		var planoDer = new Plano(30, 62, pared, 15, 15, 31, Math.PI/2, Math.PI/2, 0);
+
+		var luzIzq = new Luz(50, 60, 60);
+		var luzDer = new Luz(-50, -60, -60);
+		
+		function mover()
+		{
+			bola.rotation.x += rotx;
+			bola.position.z += velz;
+			vely -= grav;
+			bola.position.y += vely;
+			if(bola.position.y <= 3)
+			{
+				bola.position.y = 3;
+				salto *= 0.75;
+				vely = salto;
+			}
+		}
+		function colision()
+		{
+			if(bola.position.z > 62)
+			{
+				rebote();
+			}
+			else if(bola.position.z <= 3)
+			{
+			 	rebote();
+			}
+		}
+		function rebote()
+		{
+			velz = -velz;
+			rotx = -rotx;
+			salto = 0.4;
+			vely = salto;
+		}
+		function loop()
+		{
+			requestAnimationFrame(loop);
+			mover();
+			colision();
+			renderer.render(escena, camara);
+		}
+		loop();
+	}
+    </script>
+</head>
+<body>		
+	
+</body>
+</html>
